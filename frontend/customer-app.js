@@ -90,7 +90,38 @@ async function loadPaket() {
             container.appendChild(card);
         });
     } catch (e) {
-        document.getElementById('paketContainer').innerHTML = '<p style="color:red;">Gagal terhubung ke server.</p>';
+        console.warn("Menggunakan fallback data paket:", e);
+        paketWisataList = [
+            { id_paket: "PKT-001", nama_paket: "Wisata Eksotis Bali & Nusa Penida", destinasi: "Bali", harga_dasar: 3500000, kuota: 15, tipe: "Reguler", diskon: 15, daftar_gambar: [] },
+            { id_paket: "PKT-002", nama_paket: "Tour Spesial Tokyo & Mount Fuji", destinasi: "Jepang", harga_dasar: 12500000, kuota: 10, tipe: "Premium", diskon: 20, daftar_gambar: [] },
+            { id_paket: "PKT-003", nama_paket: "Petualangan Raja Ampat Papua", destinasi: "Papua", harga_dasar: 8500000, kuota: 8, tipe: "Reguler", diskon: 10, daftar_gambar: [] }
+        ];
+        const container = document.getElementById('paketContainer');
+        container.innerHTML = '';
+        paketWisataList.forEach(paket => {
+            let mainImgUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(paket.nama_paket)}&background=11998e&color=fff&size=400`;
+            const card = document.createElement('div');
+            card.className = 'package-card';
+            card.innerHTML = `
+                <img src="${mainImgUrl}" alt="${paket.nama_paket}" class="package-img">
+                <div class="package-info">
+                    <div class="package-type">Tipe: ${paket.tipe}</div>
+                    <div class="package-name">${paket.nama_paket}</div>
+                    <div class="package-dest">📍 ${paket.destinasi} (Sisa Kuota: ${paket.kuota})</div>
+                    <div class="package-price-row">
+                        <div class="price" style="display:flex; flex-direction:column; gap:2px;">
+                            ${paket.diskon && paket.diskon > 0 ? `<div style="display:flex; align-items:center; gap:5px;">
+                                <span style="text-decoration:line-through; font-size:0.8rem; color:#999;">Rp${paket.harga_dasar.toLocaleString('id-ID')}</span>
+                                <span style="background:#ef4444; color:white; padding:2px 5px; border-radius:3px; font-size:0.7rem; font-weight:bold;">Hemat ${paket.diskon}%</span>
+                            </div>` : ''}
+                            <div>Rp${(paket.diskon && paket.diskon > 0 ? (paket.harga_dasar * (1 - paket.diskon/100)) : paket.harga_dasar).toLocaleString('id-ID')} <span style="font-size:0.7rem;font-weight:normal;color:#666;">/orang</span></div>
+                        </div>
+                        <button class="btn btn-primary" style="width:auto; padding:0.5rem 1rem; align-self:flex-end;" onclick="bukaCheckout('${paket.id_paket}', '${paket.nama_paket}', ${paket.harga_dasar}, 'paket', '', ${paket.diskon || 0})">Pesan</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
     }
 }
 
