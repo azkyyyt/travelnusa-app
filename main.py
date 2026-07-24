@@ -1,6 +1,6 @@
 import os
 import sys
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, Request
 from fastapi.responses import RedirectResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,7 +16,19 @@ from backend.exceptions import KuotaPenuhError, JadwalPerjalananBentrokError
 
 app = FastAPI(title="Travel Agency API v3 (JSON/CSV File Handling)")
 
-# Setup CORS agar bisa diakses Frontend HTML dari mana saja
+# Middleware pelindung Vercel Serverless Path Rewrites
+@app.middleware("http")
+async def fix_vercel_path_routing(request: Request, call_next):
+    path = request.url.path
+    if path.startswith("/api/index"):
+        new_path = path.replace("/api/index", "", 1)
+        if not new_path:
+            new_path = "/"
+        request.scope["path"] = new_path
+    response = await call_next(request)
+    return response
+
+# Setup CORS penuh agar bisa diakses Frontend HTML dari mana saja
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
