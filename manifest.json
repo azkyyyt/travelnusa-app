@@ -1,0 +1,22 @@
+{
+    "name": "TravelNusa App",
+    "short_name": "TravelNusa",
+    "description": "Aplikasi Booking Travel Terlengkap (Hotel, Paket, Transportasi)",
+    "start_url": "/customer.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#11998e",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "logo.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "logo.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg"
+        }
+    ]
+}

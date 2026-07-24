@@ -1,0 +1,4 @@
+54:             <button class="btn" style="flex:1; background-color:#10b981;" onclick="switchAdminTab('laporan')">📈 Laporan Penjualan</button>
+479:           <h2 style="margin-bottom:1rem;">Manajemen Tiket & Pembayaran</h2>
+500:         <div id="tabLaporan" class="admin-tab" style="display: none;">
+503:                     <h2>📈 Laporan Penjualan Keseluruhan</h2>

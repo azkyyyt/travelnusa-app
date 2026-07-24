@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Travel App - Customer</title>
+    <!-- GSI Script (opsional jika butuh GSI di halaman ini) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="auth.js"></script>
+    <script>
+        // Proteksi Halaman
+        if (!isLoggedIn() || (getUserData() && getUserData().role !== 'customer')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#005c4b">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="customer-styles.css">
+    <style>
+        .traveloka-menu-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+            position: relative;
+            z-index: 10;
+        }
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            user-select: none;
+            -webkit-user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .menu-item:hover {
+            transform: scale(1.05);
+        }
+        .menu-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .menu-icon.bg-blue { background: linear-gradient(135deg, #1e3c72, #2a5298); }
+        .menu-icon.bg-green { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .menu-icon.bg-orange { background: linear-gradient(135deg, #f2994a, #f2c94c); }
+        .menu-icon.bg-purple { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
+        
+        .menu-item span {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            line-height: 1.2;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+        }
+        
+        /* Promo Cards Style */
+        .promo-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .promo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .promo-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+        .promo-tag {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #ff5722;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 10px 0 10px 0;
+            z-index: 2;
+        }
+        .promo-body {
+            padding: 10px;
+        }
+        .promo-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 5px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .promo-rating {
+            font-size: 0.75rem;
+            color: #11998e;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .promo-old-price {
+            font-size: 0.75rem;
+            color: #999;
+            text-decoration: line-through;
+            margin: 0;
+        }
+        .promo-new-price {
+            font-size: 1rem;
+            color: #ff5722;
+            font-weight: 800;
+            margin: 0;
+        }
+        .promo-grid-masonry {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            padding: 10px 0;
+        }
+        @media (max-width: 400px) {
+            .menu-icon { width: 50px; height: 50px; font-size: 1.5rem; }
+            .menu-item span { font-size: 0.75rem; }
+        }
+        
+        /* OVERRIDE MODAL SHEET SUPAYA BISA SCROLL */
+        .modal-sheet {
+            max-height: 95vh !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body style="font-family: 'Outfit', sans-serif;">
+    <div class="mobile-container">
+        <!-- NAVBAR -->
+    <header class="navbar" style="position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="logo.jpg" alt="TravelNusa Logo" style="height: 40px; border-radius: 8px;">
+            <h1 class="logo" style="color: var(--primary); font-size: 1.8rem; font-weight: 800; margin:0; font-family: 'Outfit', sans-serif;">TravelNusa</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button id="btnRefundNav" class="btn" style="width: auto; white-space: nowrap; border-radius: 14px; padding: 0.3rem 0.6rem; font-size: 0.75rem; background: var(--secondary); color: white; border: none; font-weight: 600; cursor: pointer; box-shadow: 0 2px 4px rgba(242, 106, 46, 0.2);">Cek Refund</button>
+            <!-- User Profile Area -->
+            <div id="userProfileArea" style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="logout()">
+                <div style="text-align:right;">
+                    <div id="navUserName" style="font-size:0.85rem; font-weight:700; color:#334155;">Tamu</div>
+                    <div style="font-size:0.7rem; color:#ef4444;">Logout</div>
+                </div>
+                <img id="navUserPic" src="https://ui-avatars.com/api/?name=Tamu" style="width:35px; height:35px; border-radius:50%; border:2px solid var(--primary);">
+            </div>
+        </div>
+    </header>
+
+    <div class="container" id="pageHome">
+        
+        <!-- HERO BANNER & MENU UTAMA -->
+        <div id="pageMainMenu" style="position: relative; border-radius: 20px; overflow: hidden; padding: 2rem 1rem; color: white; text-align: center; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background-image: url('travel_hero_bg.jpg'); background-size: cover; background-position: center;">
+            
+            <!-- Dark Overlay -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.6)); z-index: 1;"></div>
+            
+            <!-- Content -->
+            <div style="position: relative; z-index: 2;">
+                <!-- TRAVELOKA STYLE MENU GRID -->
+                <div class="traveloka-menu-grid">
+                    <div class="menu-item" onclick="bukaKatalog('paket')">
+                        <div class="menu-icon bg-blue">🎒</div>
+                        <span>Paket Wisata</span>
+                    </div>
+                    <div class="menu-item" onclick="bukaKatalog('hotel')">
+                        <div class="menu-icon bg-purple">🏨</div>
+                        <span>Hotel</span>
+                    </div>
+                    <div class="menu-item" onclick="bukaKatalog('transport')">
+                        <div class="menu-icon bg-green">✈️</div>
+                        <span>Transportasi</span>
+                    </div>
+                    <div class="menu-item" onclick="bukaKatalog('wisata')">
+                        <div class="menu-icon bg-orange">🎟️</div>
+                        <span>Tempat Wisata</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEKSI PROMO UNTUKMU -->
+        <div id="promoSection" style="margin-bottom: 2rem;">
+            <h2 style="font-size: 1.2rem; font-weight: 700; color: #333; margin-bottom: 10px;">Promo Untukmu</h2>
+            <div class="promo-grid-masonry" id="promoContainer">
+                <!-- Promo cards will be loaded here -->
+                <p style="color: #666; font-size: 0.9rem;">Memuat promo spesial...</p>
+            </div>
+        </div>
+
+        <!-- HALAMAN KATALOG (Sembunyi by default) -->
+        <div id="pageKatalog" style="display: none;">
+            <button onclick="kembaliKeMenu()" class="btn" style="margin-bottom: 20px; background: #666; color: white;">⬅ Kembali ke Menu</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title" id="katalogTitle" style="margin:0; font-size: 1.8rem; color: #333;">Katalog</h2>
+            </div>
+            
+            <!-- Pencarian Cerdas -->
+            <div style="margin-bottom: 20px;">
+                <input type="text" id="searchKatalog" placeholder="Cari destinasi, nama hotel, dll..." style="width: 100%; padding: 12px 15px; border-radius: 30px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); outline: none; transition: border-color 0.3s;">
+            </div>
+            
+            <div id="contentPaket" class="tab-content" style="display: none;">
+                <div class="package-grid" id="paketContainer"></div>
+            </div>
+
+            <div id="contentHotel" class="tab-content" style="display: none;">
+                <div class="package-grid" id="hotelContainer"></div>
+            </div>
+
+            <div id="contentTransport" class="tab-content" style="display: none;">
+                <div class="package-grid" id="transportContainer"></div>
+            </div>
+
+            <div id="contentWisata" class="tab-content" style="display: none;">
+                <div class="package-grid" id="wisataContainer"></div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Checkout / Pemesanan Sheet (Modal) -->
+        <div id="modalCheckout" class="modal-overlay">
+            <div class="modal-sheet">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2 class="section-title" id="checkoutTitle" style="margin:0;">Detail Pemesanan</h2>
+                    <div style="background:var(--primary); color:white; padding:0.5rem 1rem; border-radius:20px; font-weight:700; font-size:0.9rem; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+                        Saldo: Rp5.000.000
+                    </div>
+                </div>
+                
+                <div class="live-price-box">
+                    <div style="font-size:0.8rem; color:#15803d; font-weight:600;">Estimasi Harga</div>
+                    <div class="live-price-text" id="livePriceLabel">Rp0</div>
+                </div>
+
+                <form id="formCheckout">
+                    <input type="hidden" id="checkoutIdPaket">
+                    <input type="hidden" id="checkoutTipePesanan" value="paket">
+                    <div style="font-weight:700; margin-bottom:1rem; color:var(--primary);" id="checkoutNamaPaket"></div>
+                    
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="custName" required placeholder="Misal: Budi Santoso">
+                    </div>
+                    
+                    <div style="display:flex; gap:1rem;">
+                        <div class="form-group" style="flex:1;">
+                            <label id="labelTanggal">Tanggal Berangkat</label>
+                            <input type="date" id="custDate" required>
+                        </div>
+                        <div class="form-group" id="grupTipeKamar" style="flex:1; display:none;">
+                            <label>Tipe Kamar</label>
+                            <select id="custTipeKamar"></select>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:1rem;">
+                        <div class="form-group" style="flex:1;">
+                            <label id="labelOrang">Peserta</label>
+                            <input type="number" id="custOrang" value="1" min="1" required>
+                        </div>
+                        <div class="form-group" id="grupTransport" style="flex:2;">
+                            <label>Transportasi</label>
+                            <select id="custTransport">
+                                <option value="Bus">Bus (+100rb/org)</option>
+                                <option value="Kereta">Kereta (+400rb/org)</option>
+                                <option value="Pesawat">Pesawat (+1Jt/org)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="grupPromo">
+                        <label>Kode Promo (Opsional)</label>
+                        <input type="text" id="custPromo" placeholder="Misal: PROMO20">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="btnPesan">Pesan & Lanjut Bayar</button>
+                    <button type="button" class="btn btn-outline" id="btnBatalCheckout">Batal</button>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Halaman Pembayaran -->
+        <div id="pagePayment" class="section hidden">
+            <h2 class="section-title">Pembayaran</h2>
+            <div class="booking-form">
+                <p style="margin-bottom:1rem;">ID Booking: <b id="payIdBooking"></b></p>
+                <div class="live-price-box">
+                    <div style="font-size:0.8rem; color:#15803d; font-weight:600;">Tagihan Anda</div>
+                    <div class="live-price-text" id="payTotalLabel">Rp0</div>
+                </div>
+                
+                <div class="live-price-box" style="background:#e0f2fe; border-color:#bae6fd; margin-bottom:1.5rem;">
+                    <div style="font-size:0.8rem; color:#0369a1; font-weight:600;">Saldo Saat Ini</div>
+                    <div class="live-price-text" style="color:#0369a1;" id="paySaldoLabel">Rp5.000.000</div>
+                </div>
+                
+                <p style="color:#666; font-size:0.9rem; margin-bottom:1rem;">Pembayaran akan langsung memotong saldo TravelNusa Anda. Jika saldo di kehidupan nyata tidak cukup, Anda harus Top Up melalui Transfer Bank atau Virtual Account.</p>
+                <button class="btn btn-primary" id="btnBayarSekarang">Bayar Sekarang</button>
+                <button class="btn btn-outline" id="btnHomeFromPay">Kembali ke Beranda</button>
+            </div>
+        </div>
+
+        <!-- Halaman Struk Nota -->
+        <div id="pageReceipt" class="section hidden">
+            <div style="max-width: 400px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #11998e; position: relative;">
+                
+                <!-- Decoration -->
+                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #11998e; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.2rem;">✓</div>
+
+                <div style="text-align: center; margin-bottom: 2rem; margin-top: 10px;">
+                    <h2 style="font-size: 1.5rem; color: #333; margin: 0;">Pembayaran Berhasil!</h2>
+                    <p style="color: #666; font-size: 0.9rem; margin: 5px 0 0 0;">Struk Digital TravelNusa</p>
+                </div>
+                
+                <div style="border-top: 2px dashed #eee; border-bottom: 2px dashed #eee; padding: 1.5rem 0; margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                        <span style="color: #666; font-size: 0.9rem;">ID Transaksi</span>
+                        <span id="receiptId" style="font-weight: 600; color: #333; font-size: 0.9rem;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                        <span style="color: #666; font-size: 0.9rem;">Tanggal Pesanan</span>
+                        <span id="receiptDate" style="font-weight: 600; color: #333; font-size: 0.9rem;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                        <span style="color: #666; font-size: 0.9rem;">Nama Pemesan</span>
+                        <span id="receiptName" style="font-weight: 600; color: #333; font-size: 0.9rem;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                        <span style="color: #666; font-size: 0.9rem;">Tipe</span>
+                        <span id="receiptType" style="font-weight: 600; color: #333; font-size: 0.9rem; text-transform: capitalize;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                        <span style="color: #666; font-size: 0.9rem;">Total Item</span>
+                        <span id="receiptItem" style="font-weight: 600; color: #333; font-size: 0.9rem;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                        <span style="color: #666; font-size: 0.9rem;">Status</span>
+                        <span style="font-weight: 700; color: #15803d; font-size: 0.9rem; background: #dcfce7; padding: 2px 8px; border-radius: 4px;">LUNAS</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <span style="color: #333; font-weight: 700; font-size: 1.1rem;">Total Bayar</span>
+                    <span id="receiptTotal" style="font-weight: 800; color: #11998e; font-size: 1.3rem;">Rp0</span>
+                </div>
+                
+                <!-- SECTION ULASAN -->
+                <div style="margin-top: 2rem; border-top: 1px solid #eee; padding-top: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 1rem; color: #333;">Ulasan Pengguna</h3>
+                    <div id="reviewsList" style="display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto; margin-bottom: 1rem;">
+                        <!-- Ulasan akan dimuat di sini -->
+                    </div>
+                    
+                    <!-- Form Tambah Ulasan -->
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 10px;">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: #475569;">Beri Ulasan Anda</h4>
+                        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                            <select id="reviewRating" style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                                <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                                <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                                <option value="3">⭐⭐⭐ (3/5)</option>
+                                <option value="2">⭐⭐ (2/5)</option>
+                                <option value="1">⭐ (1/5)</option>
+                            </select>
+                        </div>
+                        <textarea id="reviewComment" rows="2" style="width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 10px; font-family: inherit;" placeholder="Tuliskan pengalaman Anda..."></textarea>
+                        <button type="button" class="btn btn-primary" id="btnKirimReview" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Kirim Ulasan</button>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="window.print()" style="margin-bottom: 10px;">🖨️ Simpan / Cetak Struk</button>
+                <button class="btn btn-outline" id="btnHomeFromReceipt">Selesai & Kembali</button>
+            </div>
+        </div>
+
+        <!-- Halaman Refund -->
+        <div id="pageRefund" class="section hidden">
+            <h2 class="section-title">Ajukan Pembatalan & Refund Tiket</h2>
+            <div class="booking-form" style="background:#ffffff; border-radius:16px; padding:1.5rem; box-shadow:0 10px 25px rgba(0,0,0,0.08);">
+                <div style="background:#fef2f2; border-left:4px solid #ef4444; padding:1rem; border-radius:8px; margin-bottom:1.5rem;">
+                    <h4 style="margin:0 0 5px 0; color:#991b1b; font-size:0.95rem;">⚠️ Kebijakan Pembatalan & Refund:</h4>
+                    <p style="font-size:0.82rem; color:#b91c1c; margin:0; line-height:1.4;">
+                        - Pengajuan refund hanya berlaku untuk transaksi berstatus <b>LUNAS</b>.<br>
+                        - Setiap pembatalan akan dikenakan biaya administrasi <b>15%</b>.<br>
+                        - Dana <b>85%</b> sisanya akan dikembalikan secara otomatis.
+                    </p>
+                </div>
+
+                <div class="form-group" style="margin-bottom:1.2rem;">
+                    <label style="font-weight:700; color:#334155;">Masukkan Kode ID Booking Anda</label>
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <input type="text" id="refIdBooking" required placeholder="Contoh: BKG-HTL-..." style="flex:1; padding:0.75rem; border-radius:10px; border:1px solid #cbd5e1; font-weight:600;">
+                        <button type="button" class="btn" id="btnCekDetailRefund" style="background:var(--primary); color:white; border-radius:10px; padding:0 1rem; font-weight:600; cursor:pointer;">Cek Tiket</button>
+                    </div>
+                </div>
+
+                <!-- Live Preview Details of Refund Ticket -->
+                <div id="boxPreviewRefund" style="display:none; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:1.2rem; margin-bottom:1.5rem;">
+                    <h4 style="margin:0 0 10px 0; color:#0f172a; font-size:0.95rem; border-bottom:1px solid #e2e8f0; padding-bottom:6px;">📋 Rincian Kalkulasi Refund</h4>
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:6px; color:#475569;">
+                        <span>Nama Pemesan:</span>
+                        <strong id="refPreviewNama" style="color:#0f172a;">-</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:6px; color:#475569;">
+                        <span>Total Tagihan Awal:</span>
+                        <span id="refPreviewTotal" style="color:#0f172a; font-weight:700;">Rp 0</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:6px; color:#ef4444;">
+                        <span>Potongan Pembatalan (15%):</span>
+                        <span id="refPreviewPotongan" style="font-weight:700;">- Rp 0</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:1rem; margin-top:10px; padding-top:8px; border-top:2px dashed #cbd5e1; color:#166534; font-weight:800;">
+                        <span>Estimasi Pengembalian (85%):</span>
+                        <span id="refPreviewNetRefund">Rp 0</span>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="btn btn-primary" id="btnProsesRefund" style="background:#dc2626; border-radius:12px; padding:0.8rem; font-weight:700; cursor:pointer;">🚨 Ajukan Pembatalan & Refund</button>
+                    <button class="btn btn-outline" id="btnHomeFromRefund" style="border-radius:12px; padding:0.7rem; font-weight:600; cursor:pointer;">Kembali ke Beranda</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <!-- Modal Lightbox (Klik Gambar untuk Membesar) -->
+    <div id="lightboxModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; flex-direction:column;">
+        <span onclick="tutupLightbox()" style="position:absolute; top:20px; right:30px; font-size:3rem; color:white; cursor:pointer;">&times;</span>
+        <div id="lightboxContent" style="max-width:90%; max-height:80%;">
+            <!-- Konten gambar atau video masuk di sini -->
+        </div>
+        <p id="lightboxCaption" style="color:white; margin-top:15px; font-size:1.2rem;"></p>
+    </div>
+
+    <script src="customer-app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('PWA ServiceWorker registered successfully:', reg.scope);
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed:', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
