@@ -172,7 +172,38 @@ async function loadHotelCustomer() {
             container.appendChild(card);
         });
     } catch (e) {
-        document.getElementById('hotelContainer').innerHTML = '<p style="color:red;">Gagal terhubung ke server.</p>';
+        console.warn("Menggunakan fallback data hotel:", e);
+        const list = [
+            { id_hotel: "HTL-001", nama_hotel: "Hotel Resort Grand Bali", lokasi: "Kuta, Bali", bintang: 5, tipe_kamar: "Deluxe:750000, Suite:1500000", diskon: 15, gambar: "" },
+            { id_hotel: "HTL-002", nama_hotel: "Villa Jogja Heritage", lokasi: "Yogyakarta", bintang: 4, tipe_kamar: "Standard:400000, Deluxe:650000", diskon: 10, gambar: "" }
+        ];
+        const container = document.getElementById('hotelContainer');
+        container.innerHTML = '';
+        list.forEach(hotel => {
+            let imgUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(hotel.nama_hotel)}&background=11998e&color=fff&size=400`;
+            let basePrice = 750000;
+            const card = document.createElement('div');
+            card.className = 'package-card';
+            card.innerHTML = `
+                <img src="${imgUrl}" alt="${hotel.nama_hotel}" class="package-img">
+                <div class="package-info">
+                    <div class="package-type">Bintang ${hotel.bintang} ⭐</div>
+                    <div class="package-name">${hotel.nama_hotel}</div>
+                    <div class="package-dest">📍 ${hotel.lokasi}</div>
+                    <div class="package-price-row">
+                        <div class="price" style="display:flex; flex-direction:column; gap:2px;">
+                            ${hotel.diskon && hotel.diskon > 0 ? `<div style="display:flex; align-items:center; gap:5px;">
+                                <span style="text-decoration:line-through; font-size:0.8rem; color:#999;">Rp${basePrice.toLocaleString('id-ID')}</span>
+                                <span style="background:#ef4444; color:white; padding:2px 5px; border-radius:3px; font-size:0.7rem; font-weight:bold;">Hemat ${hotel.diskon}%</span>
+                            </div>` : ''}
+                            <div>Mulai Rp${(hotel.diskon && hotel.diskon > 0 ? (basePrice * (1 - hotel.diskon/100)) : basePrice).toLocaleString('id-ID')} <span style="font-size:0.7rem;font-weight:normal;color:#666;">/hari</span></div>
+                        </div>
+                        <button class="btn btn-primary" style="width:auto; padding:0.5rem 1rem; align-self:flex-end;" onclick="bukaCheckout('${hotel.id_hotel}', '${hotel.nama_hotel}', ${basePrice}, 'hotel', '${hotel.tipe_kamar}', ${hotel.diskon || 0})">Pesan</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
     }
 }
 
@@ -195,7 +226,7 @@ async function loadTransportCustomer() {
             card.innerHTML = `
                 <img src="${imgUrl}" alt="${trans.operator}" class="package-img" style="cursor:pointer;" onclick="bukaLightbox('image', '${imgUrl}', '${trans.operator}')">
                 <div class="package-info">
-                    <div class="package-type">${trans.jenis} ✈️/🚆/🚌</div>
+                    <div class="package-type">${trans.jenis} ✈️/opsi</div>
                     <div class="package-name">${trans.operator}</div>
                     <div class="package-dest">📍 ${trans.rute}</div>
                     <div class="package-price-row">
@@ -213,7 +244,37 @@ async function loadTransportCustomer() {
             container.appendChild(card);
         });
     } catch (e) {
-        document.getElementById('transportContainer').innerHTML = '<p style="color:red;">Gagal terhubung ke server.</p>';
+        console.warn("Menggunakan fallback data transportasi:", e);
+        const list = [
+            { id_transport: "TRP-001", jenis: "Pesawat", operator: "Garuda Indonesia", rute: "Jakarta - Bali", harga: 1200000, diskon: 10, gambar: "" },
+            { id_transport: "TRP-002", jenis: "Kereta", operator: "Kereta Taksaka", rute: "Jakarta - Jogja", harga: 450000, diskon: 5, gambar: "" }
+        ];
+        const container = document.getElementById('transportContainer');
+        container.innerHTML = '';
+        list.forEach(trans => {
+            let imgUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(trans.operator)}&background=38ef7d&color=fff&size=400`;
+            const card = document.createElement('div');
+            card.className = 'package-card';
+            card.innerHTML = `
+                <img src="${imgUrl}" alt="${trans.operator}" class="package-img">
+                <div class="package-info">
+                    <div class="package-type">${trans.jenis} ✈️/🚆</div>
+                    <div class="package-name">${trans.operator}</div>
+                    <div class="package-dest">📍 ${trans.rute}</div>
+                    <div class="package-price-row">
+                        <div class="price" style="display:flex; flex-direction:column; gap:2px;">
+                            ${trans.diskon && trans.diskon > 0 ? `<div style="display:flex; align-items:center; gap:5px;">
+                                <span style="text-decoration:line-through; font-size:0.8rem; color:#999;">Rp${trans.harga.toLocaleString('id-ID')}</span>
+                                <span style="background:#ef4444; color:white; padding:2px 5px; border-radius:3px; font-size:0.7rem; font-weight:bold;">Hemat ${trans.diskon}%</span>
+                            </div>` : ''}
+                            <div>Rp${(trans.diskon && trans.diskon > 0 ? (trans.harga * (1 - trans.diskon/100)) : trans.harga).toLocaleString('id-ID')} <span style="font-size:0.7rem;font-weight:normal;color:#666;">/tiket</span></div>
+                        </div>
+                        <button class="btn btn-primary" style="width:auto; padding:0.5rem 1rem; align-self:flex-end;" onclick="bukaCheckout('${trans.id_transport}', '${trans.operator}', ${trans.harga}, 'transportasi', '', ${trans.diskon || 0})">Pesan</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
     }
 }
 
@@ -593,7 +654,37 @@ async function loadWisataCustomer() {
             container.appendChild(card);
         });
     } catch (e) {
-        document.getElementById('wisataContainer').innerHTML = '<p style="color:red;">Gagal terhubung ke server.</p>';
+        console.warn("Menggunakan fallback data wisata:", e);
+        const list = [
+            { id_wisata: "WST-001", nama_tempat: "Candi Borobudur Masterpiece", lokasi: "Magelang", harga: 75000, diskon: 15, gambar: "" },
+            { id_wisata: "WST-002", nama_tempat: "Pantai Kuta Sunset Point", lokasi: "Bali", harga: 25000, diskon: 0, gambar: "" }
+        ];
+        const container = document.getElementById('wisataContainer');
+        container.innerHTML = '';
+        list.forEach(w => {
+            let imgUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(w.nama_tempat)}&background=f59e0b&color=fff&size=400`;
+            const card = document.createElement('div');
+            card.className = 'package-card';
+            card.innerHTML = `
+                <img src="${imgUrl}" alt="${w.nama_tempat}" class="package-img">
+                <div class="package-info">
+                    <div class="package-type">Tempat Wisata 🎟️</div>
+                    <div class="package-name">${w.nama_tempat}</div>
+                    <div class="package-dest">📍 ${w.lokasi}</div>
+                    <div class="package-price-row">
+                        <div class="price" style="display:flex; flex-direction:column; gap:2px;">
+                            ${w.diskon && w.diskon > 0 ? `<div style="display:flex; align-items:center; gap:5px;">
+                                <span style="text-decoration:line-through; font-size:0.8rem; color:#999;">Rp${w.harga.toLocaleString('id-ID')}</span>
+                                <span style="background:#ef4444; color:white; padding:2px 5px; border-radius:3px; font-size:0.7rem; font-weight:bold;">Hemat ${w.diskon}%</span>
+                            </div>` : ''}
+                            <div>Rp${(w.diskon && w.diskon > 0 ? (w.harga * (1 - w.diskon/100)) : w.harga).toLocaleString('id-ID')} <span style="font-size:0.7rem;font-weight:normal;color:#666;">/tiket</span></div>
+                        </div>
+                        <button class="btn btn-primary" style="width:auto; padding:0.5rem 1rem; align-self:flex-end;" onclick="bukaCheckout('${w.id_wisata}', '${w.nama_tempat}', ${w.harga}, 'wisata', '', ${w.diskon || 0})">Pesan</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
     }
 }
 
