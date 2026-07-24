@@ -1,0 +1,17 @@
+[
+    {
+        "id_paket": "P01",
+        "nama_paket": "Bali",
+        "destinasi": "Bali",
+        "harga_dasar": 500000,
+        "kuota": 9,
+        "status_pemesanan": "Tersedia",
+        "tipe": "PaketReguler",
+        "fasilitas": [
+            "Transportasi Bus",
+            "Penginapan Bintang 3",
+            "Makan 3x Sehari"
+        ],
+        "kuota_awal": 10
+    }
+]

@@ -1,0 +1,34 @@
+[
+    {
+        "id_paket": "PKG-REG",
+        "nama_paket": "Tour Bali Reguler",
+        "destinasi": "Bali",
+        "harga_dasar": 2000000,
+        "kuota": 1,
+        "status_pemesanan": "Tersedia",
+        "tipe": "PaketReguler",
+        "fasilitas": [
+            "Transportasi Bus",
+            "Penginapan Bintang 3",
+            "Makan 3x Sehari"
+        ],
+        "kuota_awal": 2
+    },
+    {
+        "id_paket": "PKG-PRM",
+        "nama_paket": "Tour Eropa Premium",
+        "destinasi": "Eropa",
+        "harga_dasar": 15000000,
+        "kuota": 10,
+        "status_pemesanan": "Tersedia",
+        "tipe": "PaketPremium",
+        "fasilitas": [
+            "Transportasi Pesawat/Executive",
+            "Penginapan Bintang 5",
+            "Makan Fine Dining",
+            "Private Guide"
+        ],
+        "biaya_premium": 1500000,
+        "kuota_awal": 10
+    }
+]

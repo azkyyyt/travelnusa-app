@@ -1,0 +1,11 @@
+[
+    {
+        "id_hotel": "HTL-6662",
+        "nama_hotel": "sss",
+        "lokasi": "ssss",
+        "bintang": 5,
+        "tipe_kamar": "standart:400000",
+        "gambar": "IMG-20241017-WA0000.jpg",
+        "diskon": 20
+    }
+]

@@ -1,0 +1,11 @@
+[
+    {
+        "id_booking": "BKG-202607d115044-PKG-REG",
+        "id_paket": "PKG-REG",
+        "nama_peserta": "Bapak Budi",
+        "jumlah_orang": 1,
+        "tanggal_berangkat": "2024-01-15",
+        "total_harga": 2000000,
+        "status": "Dibatalkan"
+    }
+]

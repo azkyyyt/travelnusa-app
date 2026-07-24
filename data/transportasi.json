@@ -1,0 +1,11 @@
+[
+    {
+        "id_transport": "TRN-5408",
+        "jenis": "Pesawat",
+        "operator": "garuda",
+        "rute": "JKT-BALI",
+        "harga": 2500000.0,
+        "gambar": "IMG-20240611-WA0028.jpg",
+        "diskon": 25
+    }
+]

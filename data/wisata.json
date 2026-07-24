@@ -1,0 +1,18 @@
+[
+    {
+        "id_wisata": "WST-5693",
+        "nama_tempat": "AIR TERJUN RAYAP",
+        "lokasi": "LHOKSEMAWE",
+        "harga": 15000.0,
+        "gambar": "IMG-20260713-WA0081.jpg",
+        "diskon": 50
+    },
+    {
+        "id_wisata": "WST-623",
+        "nama_tempat": "Air terjun Blangkolam",
+        "lokasi": "Blang Panjang",
+        "harga": 10000.0,
+        "gambar": "IMG-20260713-WA0014.jpg",
+        "diskon": 50
+    }
+]

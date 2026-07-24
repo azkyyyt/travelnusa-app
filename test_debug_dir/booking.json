@@ -1,0 +1,11 @@
+[
+    {
+        "id_booking": "BKG-202607d124513-P01",
+        "id_paket": "P01",
+        "nama_peserta": "Siti",
+        "jumlah_orang": 1,
+        "tanggal_berangkat": "2023-12-01",
+        "total_harga": 500000,
+        "status": "Dibatalkan"
+    }
+]

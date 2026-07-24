@@ -1,0 +1,98 @@
+[
+    {
+        "id_booking": "BKG-HTL-20260723211936-HTL-3942",
+        "id_paket": "HTL-3942",
+        "nama_peserta": "Azkia Akbar",
+        "jumlah_orang": 1,
+        "tanggal_berangkat": "2026-07-27",
+        "pilihan_transportasi": null,
+        "kode_promo": "",
+        "total_harga": 0,
+        "status_pembayaran": "Menunggu Pembayaran",
+        "status": "Dikonfirmasi"
+    },
+    {
+        "id_booking": "BKG-HTL-20260723220208-HTL-9048",
+        "id_paket": "HTL-9048",
+        "nama_peserta": "tama",
+        "jumlah_orang": 1,
+        "tanggal_berangkat": "2026-07-27",
+        "pilihan_transportasi": "VIP",
+        "kode_promo": "",
+        "total_harga": 449999.99999999994,
+        "status_pembayaran": "Lunas",
+        "status": "Dikonfirmasi"
+    },
+    {
+        "id_booking": "BKG-TRN-20260723225826-TRN-7653",
+        "id_paket": "TRN-7653",
+        "nama_peserta": "budi",
+        "jumlah_orang": 1,
+        "tanggal_berangkat": "2026-07-26",
+        "pilihan_transportasi": "",
+        "kode_promo": "",
+        "total_harga": 800000.0,
+        "status_pembayaran": "Lunas",
+        "status": "Dikonfirmasi"
+    },
+    {
+        "id_booking": "BKG-WST-20260723230515-WST-4518",
+        "id_paket": "WST-4518",
+        "nama_peserta": "anjay",
+        "jumlah_orang": 6,
+        "tanggal_berangkat": "2026-07-30",
+        "pilihan_transportasi": "",
+        "kode_promo": "",
+        "total_harga": 30000.0,
+        "status_pembayaran": "Lunas",
+        "status": "Dikonfirmasi"
+    },
+    {
+        "id_booking": "BKG-HTL-20260724012104-HTL-6662",
+        "id_paket": "HTL-6662",
+        "nama_peserta": "tama",
+        "jumlah_orang": 1,
+        "tanggal_berangkat": "2026-07-24",
+        "pilihan_transportasi": "standart",
+        "kode_promo": "",
+        "total_harga": 320000.0,
+        "status_pembayaran": "Lunas",
+        "status": "Dikonfirmasi"
+    },
+    {
+        "id_booking": "BKG-HTL-20260724012554-HTL-6662",
+        "id_paket": "HTL-6662",
+        "nama_peserta": "kkjhe",
+        "jumlah_orang": 1,
+        "tanggal_berangkat": "2026-02-22",
+        "pilihan_transportasi": "standart",
+        "kode_promo": "",
+        "total_harga": 320000.0,
+        "status_pembayaran": "Menunggu Pembayaran",
+        "status": "Dikonfirmasi"
+    },
+    {
+        "id_booking": "BKG-HTL-20260724013039-HTL-6662",
+        "id_paket": "HTL-6662",
+        "nama_peserta": "kkchal",
+        "jumlah_orang": 1,
+        "tanggal_berangkat": "2026-02-22",
+        "pilihan_transportasi": "standart",
+        "kode_promo": "",
+        "total_harga": 320000.0,
+        "status_pembayaran": "Lunas",
+        "status": "Dikonfirmasi"
+    },
+    {
+        "id_booking": "BKG-20260724174702-PKG-7653",
+        "id_paket": "PKG-7653",
+        "nama_peserta": "Test Refund Customer",
+        "jumlah_orang": 1,
+        "tanggal_berangkat": "2026-08-10",
+        "pilihan_transportasi": "Bus",
+        "kode_promo": null,
+        "total_harga": 13600000.0,
+        "status_pembayaran": "Lunas",
+        "status": "Dibatalkan"
+    }
+]

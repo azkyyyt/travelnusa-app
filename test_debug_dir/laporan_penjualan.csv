@@ -1,0 +1,3 @@
+id_booking,tanggal,id_paket,nama_peserta,jumlah_orang,total_harga,status
+BKG-202607d124513-P01,2026-07-23,P01,Siti,1,500000,Dikonfirmasi
+BKG-202607d124513-P01,2026-07-23,P01,Siti,1,-450000.0,Refund (Dibatalkan)

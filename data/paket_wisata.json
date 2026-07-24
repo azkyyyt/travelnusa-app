@@ -1,0 +1,42 @@
+[
+    {
+        "id_paket": "PKG-7653",
+        "nama_paket": "TRIP TO KHASMIR",
+        "destinasi": "KHASMIR ",
+        "harga_dasar": 12000000.0,
+        "kuota": 20,
+        "daftar_gambar": [
+            "IMG_20241016_112245_389.jpg"
+        ],
+        "video": "lv_7615139719722175745_20260323215616.mp4",
+        "diskon": 0,
+        "status_pemesanan": "Tersedia",
+        "tipe": "PaketPremium",
+        "fasilitas": [
+            "Transportasi Pesawat/Executive",
+            "Penginapan Bintang 5",
+            "Makan Fine Dining",
+            "Private Guide"
+        ],
+        "biaya_premium": 1500000
+    },
+    {
+        "id_paket": "PKG-1244",
+        "nama_paket": "krukuh",
+        "destinasi": "Aceh Utara",
+        "harga_dasar": 350000.0,
+        "kuota": 30,
+        "daftar_gambar": [
+            "IMG-20260605-WA0027.jpg"
+        ],
+        "video": "VID-20260718-WA0011.mp4",
+        "diskon": 10,
+        "status_pemesanan": "Tersedia",
+        "tipe": "PaketReguler",
+        "fasilitas": [
+            "Transportasi Bus",
+            "Penginapan Bintang 3",
+            "Makan 3x Sehari"
+        ]
+    }
+]

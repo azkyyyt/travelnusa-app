@@ -1,0 +1,3 @@
+id_booking,tanggal,id_paket,nama_peserta,jumlah_orang,total_harga,status
+BKG-202607d115044-PKG-REG,2026-07-23,PKG-REG,Bapak Budi,1,2000000,Dikonfirmasi
+BKG-202607d115044-PKG-REG,2026-07-23,PKG-REG,Bapak Budi,1,-1800000.0,Refund (Dibatalkan)
