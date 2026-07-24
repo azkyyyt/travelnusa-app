@@ -46,8 +46,7 @@ if os.path.exists(uploads_dir):
     app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
 if os.path.exists(frontend_dir):
-    app.mount("/frontend", StaticFiles(directory=frontend_dir, html=True), name="frontend_mount")
-    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="root_mount")
+    app.mount("/frontend", StaticFiles(directory=frontend_dir, html=True), name="frontend")
 
 manager = BookingManager(folder_data=data_dir)
 
@@ -423,3 +422,10 @@ def tambah_review(req: ReviewRequest):
 @app.get("/reviews/{target_id}")
 def get_reviews(target_id: str):
     return manager.get_reviews(target_id)
+
+@app.get("/{file_name}")
+def get_static_file(file_name: str):
+    file_path = os.path.join(frontend_dir, file_name)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+    raise HTTPException(status_code=404, detail="File not found")
