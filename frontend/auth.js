@@ -58,6 +58,13 @@ function simulasiLogin() {
 }
 
 function simulasiLoginAdmin() {
+    const inputPassword = prompt("🔐 Masukkan Kata Sandi Keamanan Admin TravelNusa:");
+    if (inputPassword === null) return;
+    if (inputPassword.trim() !== "admin123") {
+        alert("❌ Kata Sandi Admin Salah! Akses Ditolak.");
+        return;
+    }
+    
     const mockAdmin = {
         uid: 'ADM-001',
         name: 'Super Admin',
