@@ -116,6 +116,32 @@ class BookingManager:
             if not isinstance(self.daftar_reviews, list):
                 self.daftar_reviews = []
                 
+            if not self.daftar_paket:
+                p1 = PaketWisataFactory.buat_paket("Reguler", "PKT-001", "Wisata Eksotis Bali & Nusa Penida", "Bali", 3500000, 15, [], "")
+                p1.diskon = 15
+                p2 = PaketWisataFactory.buat_paket("Premium", "PKT-002", "Tour Spesial Tokyo & Mount Fuji", "Jepang", 12500000, 10, [], "")
+                p2.diskon = 20
+                p3 = PaketWisataFactory.buat_paket("Reguler", "PKT-003", "Petualangan Raja Ampat Papua", "Papua", 8500000, 8, [], "")
+                p3.diskon = 10
+                self.daftar_paket = {"PKT-001": p1, "PKT-002": p2, "PKT-003": p3}
+
+            if not self.daftar_hotel:
+                self.daftar_hotel = [
+                    {"id_hotel": "HTL-001", "nama_hotel": "Hotel Resort Grand Bali", "lokasi": "Kuta, Bali", "bintang": 5, "tipe_kamar": "Deluxe:750000, Suite:1500000", "gambar": "", "diskon": 15},
+                    {"id_hotel": "HTL-002", "nama_hotel": "Villa Jogja Heritage", "lokasi": "Yogyakarta", "bintang": 4, "tipe_kamar": "Standard:400000, Deluxe:650000", "gambar": "", "diskon": 10}
+                ]
+
+            if not self.daftar_transportasi:
+                self.daftar_transportasi = [
+                    {"id_transport": "TRP-001", "jenis": "Pesawat", "operator": "Garuda Indonesia", "rute": "Jakarta - Bali", "harga": 1200000, "gambar": "", "diskon": 10},
+                    {"id_transport": "TRP-002", "jenis": "Kereta", "operator": "Kereta Taksaka", "rute": "Jakarta - Jogja", "harga": 450000, "gambar": "", "diskon": 5}
+                ]
+
+            if not self.daftar_wisata:
+                self.daftar_wisata = [
+                    {"id_wisata": "WST-001", "nama_tempat": "Candi Borobudur Masterpiece", "lokasi": "Magelang", "harga": 75000, "gambar": "", "diskon": 15},
+                    {"id_wisata": "WST-002", "nama_tempat": "Pantai Kuta Sunset Point", "lokasi": "Bali", "harga": 25000, "gambar": "", "diskon": 0}
+                ]
         except Exception as e:
             print(f"Error memuat data awal: {e}")
             
