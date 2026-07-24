@@ -46,7 +46,8 @@ if os.path.exists(uploads_dir):
     app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
 if os.path.exists(frontend_dir):
-    app.mount("/frontend", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+    app.mount("/frontend", StaticFiles(directory=frontend_dir, html=True), name="frontend_mount")
+    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="root_mount")
 
 manager = BookingManager(folder_data=data_dir)
 
