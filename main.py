@@ -16,7 +16,7 @@ from backend.exceptions import KuotaPenuhError, JadwalPerjalananBentrokError
 
 app = FastAPI(title="Travel Agency API v3 (JSON/CSV File Handling)")
 
-# Setup CORS agar bisa diakses Frontend HTML
+# Setup CORS agar bisa diakses Frontend HTML dari mana saja
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -50,7 +50,22 @@ if os.path.exists(frontend_dir):
 
 manager = BookingManager(folder_data=data_dir)
 
-
+def save_uploaded_file(file_obj) -> str:
+    if not file_obj or not getattr(file_obj, "filename", None):
+        return ""
+    try:
+        file_location = os.path.join(uploads_dir, file_obj.filename)
+        with open(file_location, "wb+") as file_object:
+            file_object.write(file_obj.file.read())
+    except Exception:
+        try:
+            tmp_location = os.path.join("/tmp", "uploads", file_obj.filename)
+            os.makedirs(os.path.dirname(tmp_location), exist_ok=True)
+            with open(tmp_location, "wb+") as file_object:
+                file_object.write(file_obj.file.read())
+        except Exception:
+            pass
+    return file_obj.filename
 
 class PesanRequest(BaseModel):
     id_paket: str
@@ -92,18 +107,11 @@ async def edit_paket(
         nama_gambar_list = []
         if gambar:
             for g in gambar:
-                if g and g.filename:
-                    file_location = f"uploads/{g.filename}"
-                    with open(file_location, "wb+") as file_object:
-                        file_object.write(g.file.read())
-                    nama_gambar_list.append(g.filename)
+                fname = save_uploaded_file(g)
+                if fname:
+                    nama_gambar_list.append(fname)
                     
-        nama_video = ""
-        if video and video.filename:
-            file_location = f"uploads/{video.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(video.file.read())
-            nama_video = video.filename
+        nama_video = save_uploaded_file(video)
             
         manager.edit_paket(id_paket, nama_paket, destinasi, harga, kuota, nama_gambar_list, nama_video, diskon)
         return {"message": "Paket berhasil diupdate."}
@@ -137,13 +145,7 @@ async def tambah_hotel(
     diskon: int = Form(0)
 ):
     try:
-        nama_gambar = ""
-        if gambar and gambar.filename:
-            file_location = f"uploads/{gambar.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(gambar.file.read())
-            nama_gambar = gambar.filename
-            
+        nama_gambar = save_uploaded_file(gambar)
         data = {
             "id_hotel": id_hotel,
             "nama_hotel": nama_hotel,
@@ -163,7 +165,6 @@ def hapus_hotel(id_hotel: str):
     manager.hapus_hotel(id_hotel)
     return {"message": "Hotel berhasil dihapus"}
 
-
 @app.put("/hotel/{id_hotel}")
 async def edit_hotel(
     id_hotel: str,
@@ -175,13 +176,7 @@ async def edit_hotel(
     diskon: int = Form(0)
 ):
     try:
-        nama_gambar = ""
-        if gambar and gambar.filename:
-            file_location = f"uploads/{gambar.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(gambar.file.read())
-            nama_gambar = gambar.filename
-            
+        nama_gambar = save_uploaded_file(gambar)
         data_baru = {
             "id_hotel": id_hotel,
             "nama_hotel": nama_hotel,
@@ -195,6 +190,7 @@ async def edit_hotel(
         return {"message": "Hotel berhasil diupdate."}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 @app.get("/transportasi")
 def get_transportasi():
     return manager.daftar_transportasi
@@ -210,13 +206,7 @@ async def tambah_transportasi(
     diskon: int = Form(0)
 ):
     try:
-        nama_gambar = ""
-        if gambar and gambar.filename:
-            file_location = f"uploads/{gambar.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(gambar.file.read())
-            nama_gambar = gambar.filename
-            
+        nama_gambar = save_uploaded_file(gambar)
         data = {
             "id_transport": id_transport,
             "jenis": jenis,
@@ -247,13 +237,7 @@ async def edit_transportasi(
     diskon: int = Form(0)
 ):
     try:
-        nama_gambar = ""
-        if gambar and gambar.filename:
-            file_location = f"uploads/{gambar.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(gambar.file.read())
-            nama_gambar = gambar.filename
-            
+        nama_gambar = save_uploaded_file(gambar)
         data_baru = {
             "id_transport": id_transport,
             "jenis": jenis,
@@ -282,13 +266,7 @@ async def tambah_wisata(
     diskon: int = Form(0)
 ):
     try:
-        nama_gambar = ""
-        if gambar and gambar.filename:
-            file_location = f"uploads/{gambar.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(gambar.file.read())
-            nama_gambar = gambar.filename
-            
+        nama_gambar = save_uploaded_file(gambar)
         data = {
             "id_wisata": id_wisata,
             "nama_tempat": nama_tempat,
@@ -317,13 +295,7 @@ async def edit_wisata(
     diskon: int = Form(0)
 ):
     try:
-        nama_gambar = ""
-        if gambar and gambar.filename:
-            file_location = f"uploads/{gambar.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(gambar.file.read())
-            nama_gambar = gambar.filename
-            
+        nama_gambar = save_uploaded_file(gambar)
         data_baru = {
             "id_wisata": id_wisata,
             "nama_tempat": nama_tempat,
@@ -353,48 +325,79 @@ async def tambah_paket(
         nama_gambar_list = []
         if gambar:
             for g in gambar:
-                if g and g.filename:
-                    file_location = f"uploads/{g.filename}"
-                    with open(file_location, "wb+") as file_object:
-                        file_object.write(g.file.read())
-                    nama_gambar_list.append(g.filename)
+                fname = save_uploaded_file(g)
+                if fname:
+                    nama_gambar_list.append(fname)
                     
-        nama_video = ""
-        if video and video.filename:
-            file_location = f"uploads/{video.filename}"
-            with open(file_location, "wb+") as file_object:
-                file_object.write(video.file.read())
-            nama_video = video.filename
+        nama_video = save_uploaded_file(video)
             
-        manager.tambah_paket_baru(tipe, id_paket, nama_paket, destinasi, harga, kuota, nama_gambar_list, nama_video, diskon)
+        manager.tambah_paket(tipe, id_paket, nama_paket, destinasi, harga, kuota, nama_gambar_list, nama_video, diskon)
         return {"message": "Paket berhasil ditambahkan."}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-@app.post("/pesan")
-def pesan_paket(req: PesanRequest):
-    try:
-        booking = manager.buat_pesanan(
-            req.id_paket, req.nama_peserta, req.jumlah_orang, 
-            req.tanggal_berangkat, req.transportasi, req.kode_promo, req.tipe_pesanan, req.tipe_kamar_pilihan
-        )
-        return booking
     except (KuotaPenuhError, JadwalPerjalananBentrokError) as e:
         raise HTTPException(status_code=400, detail=str(e))
-    except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Terjadi kesalahan internal: {str(e)}")
 
-@app.get("/booking/count")
-def get_booking_count():
-    # Menghitung jumlah booking untuk notifikasi (hanya yang sudah dibayar/dipesan)
-    return {"count": len(manager.daftar_booking)}
+@app.post("/pesan")
+def buat_pesanan(req: PesanRequest):
+    try:
+        booking = manager.buat_pesanan(
+            id_paket=req.id_paket,
+            nama_peserta=req.nama_peserta,
+            jumlah_orang=req.jumlah_orang,
+            tanggal_berangkat=req.tanggal_berangkat,
+            transportasi=req.transportasi,
+            kode_promo=req.kode_promo,
+            tipe_pesanan=req.tipe_pesanan,
+            tipe_kamar_pilihan=req.tipe_kamar_pilihan
+        )
+        return {
+            "message": "Pemesanan berhasil dibuat.",
+            "id_booking": booking["id_booking"],
+            "total_biaya": booking["total_biaya"],
+            "detail": booking
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except (KuotaPenuhError, JadwalPerjalananBentrokError) as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Terjadi kesalahan internal: {str(e)}")
 
 @app.post("/bayar")
-def bayar_paket(req: BayarRequest):
+def proses_pembayaran(req: BayarRequest):
     try:
-        hasil = manager.proses_pembayaran(req.id_booking, req.jumlah_bayar)
+        struk = manager.proses_pembayaran(req.id_booking, req.jumlah_bayar)
+        return {
+            "message": "Pembayaran berhasil.",
+            "struk": struk
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Terjadi kesalahan internal: {str(e)}")
+
+@app.get("/struk/{id_booking}")
+def lihat_struk(id_booking: str):
+    for b in manager.daftar_booking:
+        if b["id_booking"] == id_booking:
+            if b["status_pembayaran"] == "Lunas":
+                return b.get("struk", {"message": "Struk tidak ditemukan."})
+            else:
+                raise HTTPException(status_code=400, detail="Pemesanan belum lunas.")
+    raise HTTPException(status_code=404, detail="ID Booking tidak ditemukan.")
+
+@app.get("/laporan/csv")
+def unduh_laporan_csv():
+    filepath = manager.file_laporan_csv
+    if os.path.exists(filepath):
+        return FileResponse(filepath, media_type="text/csv", filename="laporan_penjualan.csv")
+    raise HTTPException(status_code=404, detail="Berkas laporan CSV belum tersedia.")
+
+@app.get("/detail_refund/{id_booking}")
+def detail_refund(id_booking: str):
+    try:
+        hasil = manager.hitung_detail_refund(id_booking)
         return hasil
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
