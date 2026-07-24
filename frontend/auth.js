@@ -57,14 +57,29 @@ function simulasiLogin() {
     simpanSesiDanRedirect(mockUser);
 }
 
-function simulasiLoginAdmin() {
-    const inputPassword = prompt("🔐 Masukkan Kata Sandi Keamanan Admin TravelNusa:");
-    if (inputPassword === null) return;
-    if (inputPassword.trim() !== "admin123") {
-        alert("❌ Kata Sandi Admin Salah! Akses Ditolak.");
+function bukaModalAdminPassword() {
+    const modal = document.getElementById('modalAdminPassword');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.getElementById('inputAdminPassword').value = '';
+        document.getElementById('msgAdminPasswordError').style.display = 'none';
+    } else {
+        simulasiLoginAdmin();
+    }
+}
+
+function tutupModalAdminPassword() {
+    const modal = document.getElementById('modalAdminPassword');
+    if (modal) modal.style.display = 'none';
+}
+
+function prosesVerifikasiAdminPassword() {
+    const pwd = document.getElementById('inputAdminPassword').value.trim();
+    if (pwd !== "admin123") {
+        document.getElementById('msgAdminPasswordError').style.display = 'block';
         return;
     }
-    
+    tutupModalAdminPassword();
     const mockAdmin = {
         uid: 'ADM-001',
         name: 'Super Admin',
