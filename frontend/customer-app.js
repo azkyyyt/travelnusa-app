@@ -1,4 +1,6 @@
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1'))
+    ? 'http://127.0.0.1:8000'
+    : window.location.origin;
 let paketWisataList = [];
 let currentPaketId = null;
 let currentHargaDasar = 0;
